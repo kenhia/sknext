@@ -6,7 +6,7 @@ import typer
 from rich.console import Console
 
 from sknext.constants import DEFAULT_TASK_COUNT
-from sknext.discovery import discover_latest_tasks_file
+from sknext.discovery import discover_latest_tasks_file, find_repository_root
 from sknext.formatter import (
     format_combined_view,
     format_default_view,
@@ -68,15 +68,37 @@ def main(
     """Display uncompleted tasks from a speckit tasks.md file.
 
     By default, shows the next 10 uncompleted tasks with their phase and section context.
-    Auto-discovers the latest tasks.md from specs/###-*/ if no path is provided.
+
+    Auto-discovers the latest tasks.md from specs/###-*/ directories by:
+    1. Detecting repository root (git, mercurial, svn, or specs/ folder)
+    2. Finding the highest numbered feature directory
+    3. Loading its tasks.md file
+
+    Works from any subdirectory within your project - no need to be at the root!
     """
     console = Console()
 
     try:
         # Auto-discover if no path provided
         if file_path is None:
-            file_path = discover_latest_tasks_file(Path.cwd())
-            console.print(f"[dim]Found: {file_path}[/dim]\n")
+            # Detect repository root
+            repo_root = find_repository_root(Path.cwd())
+
+            if repo_root is None:
+                console.print(
+                    "[bold red]Error:[/bold red] No Git repository or speckit project detected "
+                    "within 10 parent directories.\n"
+                    "Run from a project directory or specify file path explicitly:\n"
+                    "  [dim]sknext /path/to/tasks.md[/dim]"
+                )
+                raise typer.Exit(code=1)
+
+            try:
+                file_path = discover_latest_tasks_file(repo_root)
+                console.print(f"[dim]Found: {file_path}[/dim]\n")
+            except FileNotFoundError as e:
+                console.print(f"[bold red]Error:[/bold red] {e}")
+                raise typer.Exit(code=1) from None
 
         # Parse the file
         tasks_file = parse_tasks_file(file_path)
