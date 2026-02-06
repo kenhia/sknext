@@ -33,6 +33,32 @@ pip install -e .
 
 ## Usage
 
+### Auto-Discovery from Any Directory
+
+**sknext** automatically detects your project's repository root and finds the latest `tasks.md` file:
+
+```bash
+# Run from any subdirectory in your project
+cd src/mymodule
+sknext
+
+# Run from repository root
+cd /path/to/project
+sknext
+
+# Run from a feature subdirectory
+cd specs/001-my-feature
+sknext
+```
+
+**How it works:**
+1. **Git Detection**: Uses `git rev-parse --show-toplevel` to find repository root (fastest)
+2. **VCS Markers**: Falls back to searching for `.git`, `.hg`, or `.svn` directories (up to 10 levels)
+3. **Specs Fallback**: If no VCS found, searches for `specs/` directory (for non-git projects)
+4. **Latest Discovery**: Finds the highest numbered `specs/###-*/tasks.md` file
+
+This means you can work deep in your codebase and quickly check task status without navigating to the project root!
+
 ### Quick Status Check (Default)
 
 Show the next 10 uncompleted tasks with full context:
@@ -107,11 +133,22 @@ Perfect for final sprint planning or comprehensive project reviews.
 
 ### No tasks.md found
 
-If you get "Error: specs directory not found":
+If you get "Error: No Git repository or speckit project detected":
 
-1. Make sure you're in the project root directory
-2. Ensure you have a `specs/###-feature-name/tasks.md` file structure
-3. Or explicitly specify the path: `sknext path/to/tasks.md`
+1. **Run from within a project**: Make sure you're inside a git repository or directory with a `specs/` folder
+2. **Check your location**: sknext searches up to 10 parent directories for repository markers
+3. **Verify project structure**: Ensure you have either:
+   - A `.git` directory (git repository)
+   - A `specs/###-feature-name/tasks.md` file structure
+4. **Explicit path**: You can always specify the path directly: `sknext path/to/tasks.md`
+
+### Project Detection
+
+sknext uses a three-tier approach to find your project:
+
+1. **Git command** (`git rev-parse --show-toplevel`) - preferred method
+2. **VCS markers** (`.git`, `.hg`, `.svn` directories) - works in nested repos
+3. **Specs directory** - fallback for non-git projects with specs/ folder
 
 ### Empty output
 
@@ -126,6 +163,7 @@ If sknext is slow:
 
 - Check file size - files with >1000 tasks may take longer
 - Expected: <2s for default view, <3s for files with 500 tasks
+- Auto-discovery adds <200ms overhead for repository detection
 - Report performance issues with file size and timing
 
 ## Development
