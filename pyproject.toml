@@ -3,14 +3,36 @@ name = "sknext"
 version = "0.1.0"
 description = "Task status viewer for speckit projects"
 readme = "README.md"
+license = { text = "MIT" }
 authors = [
     { name = "Ken Hiatt", email = "ken.hiatt@gmail.com" }
 ]
 requires-python = ">=3.11"
+keywords = ["task", "project-management", "cli", "speckit", "development-tools"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Project Management",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
 dependencies = [
     "typer>=0.9.0",
     "rich>=13.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/kenhia/sknext"
+Repository = "https://github.com/kenhia/sknext"
+Issues = "https://github.com/kenhia/sknext/issues"
+Changelog = "https://github.com/kenhia/sknext/releases"
 
 [project.scripts]
 sknext = "sknext.cli:app"

@@ -13,22 +13,32 @@ Task status viewer for speckit projects - a CLI tool to quickly view and track t
 
 ## Installation
 
-### Using uv (recommended)
+### From PyPI (Recommended)
+
+Once published, install directly from PyPI:
+
+```bash
+pip install sknext
+```
+
+Or with uv:
+
+```bash
+uv pip install sknext
+```
+
+### From Source
+
+For development or to use the latest unreleased version:
 
 ```bash
 # Install uv if you don't have it
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Clone and install
-git clone <repository-url>
+git clone https://github.com/kenhia/sknext.git
 cd sknext
 uv sync
-```
-
-### Using pip
-
-```bash
-pip install -e .
 ```
 
 ## Usage
