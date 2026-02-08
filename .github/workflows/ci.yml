@@ -70,6 +70,4 @@ jobs:
         run: uv build
       
       - name: Check package metadata
-        run: |
-          uv pip install twine
-          uv run twine check dist/*
+        run: uvx twine check dist/*
