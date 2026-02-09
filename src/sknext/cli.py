@@ -129,6 +129,9 @@ def main(
     except FileNotFoundError as e:
         console.print(f"[bold red]Error:[/bold red] {e}")
         raise typer.Exit(code=1) from None
+    except (typer.Exit, typer.Abort):
+        # Let typer control flow exceptions propagate
+        raise
     except Exception as e:
         console.print(f"[bold red]Unexpected error:[/bold red] {e}")
         raise typer.Exit(code=3) from None

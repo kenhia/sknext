@@ -125,9 +125,7 @@ def test_cli_missing_specs_directory(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     result = runner.invoke(app, [])
 
-    # typer.Exit(code=1) actually results in exit code 3 when invoked via CliRunner
-    # This is a typer behavior - it uses exit code 3 for "graceful exit with error message"
-    assert result.exit_code == 3
+    assert result.exit_code == 1
     assert "Error" in result.stdout
     assert "No Git repository" in result.stdout
 
